@@ -9,11 +9,10 @@ class Node
     @right = nil
   end
 
-  # def <=> (other)
-  #   @data <=> other.data
-  # end
+  def <=>(other)
+    @data <=> other
+  end
 end
-
 
 class Tree
   attr_accessor :root
@@ -44,9 +43,44 @@ class Tree
   def insert(value, root)
     return if @arr.include?(value)
     return Node.new(value) if root.nil?
-    
+
     root.data < value ? root.right = insert(value, root.right) : root.left = insert(value, root.left)
-       
+
+    root
+  end
+
+  def minValueNode(node)
+    current = node
+
+    until current.left.nil?
+      current = current.left
+    end
+    current
+  end
+
+  def delete(value, root)
+    return root if root.nil?
+
+    if value < root.data
+      root.left = delete(value, root.left)
+    elsif value > root.data
+      root.right = delete(value, root.right)
+    else
+
+      if root.left.nil?
+        temp = root.right
+        root = nil
+        return temp
+      elsif root.right.nil?
+        temp = root.left
+        root = nil
+        return temp
+      end
+
+      temp = minValueNode(root.right)
+      root.data = temp.data
+      root.right = delete(temp.data, root.right)
+    end
     root
   end
 end
@@ -56,4 +90,6 @@ bst = Tree.new(array)
 bst.pretty_print
 
 bst.insert(60, bst.root)
+bst.pretty_print
+bst.delete(4, bst.root)
 bst.pretty_print
