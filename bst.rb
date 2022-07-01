@@ -96,6 +96,17 @@ class Tree
 
     false
   end
+
+  def level_order
+    queue = [@root]
+    until queue.empty?
+      check_node = queue.shift
+      yield check_node
+
+      queue << check_node.left unless check_node.left.nil?
+      queue << check_node.right unless check_node.right.nil?
+    end
+  end
 end
 
 array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
@@ -105,3 +116,4 @@ bst.insert(60, bst.root)
 bst.delete(4, bst.root)
 bst.pretty_print
 puts bst.find(2)
+bst.level_order {|node| puts node.data if node.data < 60}
