@@ -83,13 +83,25 @@ class Tree
     end
     root
   end
+
+  def find(value)
+    queue = [@root]
+    until queue.empty?
+      check_node = queue.shift
+      return true if check_node == value
+
+      queue << check_node.left unless check_node.left.nil?
+      queue << check_node.right unless check_node.right.nil?
+    end
+
+    false
+  end
 end
 
 array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
 bst = Tree.new(array)
-bst.pretty_print
 
 bst.insert(60, bst.root)
-bst.pretty_print
 bst.delete(4, bst.root)
 bst.pretty_print
+puts bst.find(2)
