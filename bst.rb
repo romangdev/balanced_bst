@@ -97,14 +97,54 @@ class Tree
     false
   end
 
-  def level_order
+  def level_order(arr = [], &block)
     queue = [@root]
     until queue.empty?
       check_node = queue.shift
-      yield check_node
-
+      if block_given?
+        block.call(check_node) 
+      else 
+        arr << check_node
+      end
+      
       queue << check_node.left unless check_node.left.nil?
       queue << check_node.right unless check_node.right.nil?
+    end
+  end
+
+  def inorder(root = @root, arr = [], &block)
+    return if root.nil?
+
+    if block_given?
+      inorder(root.left, &block)
+      block.call(root)
+      inorder(root.right, &block) 
+    else
+      arr << root
+    end
+  end
+
+  def preorder(root = @root, arr = [], &block)
+    return if root.nil?
+
+    if block_given?
+      block.call(root)
+      preorder(root.left, &block)
+      preorder(root.right, &block)
+    else
+      arr << root
+    end
+  end
+
+  def postorder(root = @root, arr = [], &block)
+    return if root.nil?
+
+    if block_given?
+      postorder(root.left, &block)
+      postorder(root.right, &block)
+      block.call(root)
+    else
+      arr << root
     end
   end
 end
@@ -115,5 +155,6 @@ bst = Tree.new(array)
 bst.insert(60, bst.root)
 bst.delete(4, bst.root)
 bst.pretty_print
-puts bst.find(2)
-bst.level_order {|node| puts node.data if node.data < 60}
+# puts bst.find(2)
+# bst.level_order
+bst.postorder {|node| puts node.data * 2}
