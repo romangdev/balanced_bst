@@ -1,18 +1,4 @@
-class Node
-  include Comparable
-
-  attr_accessor :data, :left, :right
-
-  def initialize(data)
-    @data = data
-    @left = nil
-    @right = nil
-  end
-
-  def <=>(other)
-    @data <=> other
-  end
-end
+require_relative 'node'
 
 class Tree
   attr_accessor :root
@@ -34,6 +20,7 @@ class Tree
     node
   end
 
+  # visually display binary search tree in current state
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -49,12 +36,11 @@ class Tree
     root
   end
 
+  # find the node with the smallest value
   def minValueNode(node)
     current = node
 
-    until current.left.nil?
-      current = current.left
-    end
+    current = current.left until current.left.nil?
     current
   end
 
@@ -84,6 +70,7 @@ class Tree
     root
   end
 
+  # returns true if specific node is found in binary tree
   def find(value)
     queue = [@root]
     until queue.empty?
@@ -97,6 +84,7 @@ class Tree
     false
   end
 
+  # returns specific node if node equals argument passed
   def find_for_measure(value)
     queue = [@root]
     until queue.empty?
@@ -110,33 +98,36 @@ class Tree
     false
   end
 
+  # conduct a breadth first search traversal
   def level_order(arr = [], &block)
     queue = [@root]
     until queue.empty?
       check_node = queue.shift
       if block_given?
-        block.call(check_node) 
-      else 
+        block.call(check_node)
+      else
         arr << check_node
       end
-      
+
       queue << check_node.left unless check_node.left.nil?
       queue << check_node.right unless check_node.right.nil?
     end
   end
 
+  # inorder depth first search traversal
   def inorder(root = @root, arr = [], &block)
     return if root.nil?
 
     if block_given?
       inorder(root.left, &block)
       block.call(root)
-      inorder(root.right, &block) 
+      inorder(root.right, &block)
     else
       arr << root
     end
   end
 
+  # preorder depth first search traversal
   def preorder(root = @root, arr = [], &block)
     return if root.nil?
 
@@ -149,6 +140,7 @@ class Tree
     end
   end
 
+  # postorder depth first search traversal
   def postorder(root = @root, arr = [], &block)
     return if root.nil?
 
@@ -161,18 +153,20 @@ class Tree
     end
   end
 
+  # return the height of a given node (measured from furthest leaf node in tree)
   def height(root, height = 0)
     return height - 1 if root.nil?
-    return "Number not in tree" if root == false
+    return 'Number not in tree' if root == false
 
     height += 1
 
     [height(root.left, height), height(root.right, height)].max
   end
 
+  # return the depth of a given node (measured from root node of tree)
   def depth(node, level = 0, check_node = nil)
     return 0 if node == @root
-    return "Number not in tree" if node == false
+    return 'Number not in tree' if node == false
 
     queue = [@root]
     arr = []
@@ -184,12 +178,12 @@ class Tree
       arr << check_node.left unless check_node.left.nil?
       arr << check_node.right unless check_node.right.nil?
 
-      if queue.empty?
-        level += 1
+      next unless queue.empty?
 
-        arr.each do |node_element|
-          queue << node_element
-        end
+      level += 1
+
+      arr.each do |node_element|
+        queue << node_element
       end
     end
   end
@@ -202,24 +196,7 @@ class Tree
   end
 
   def rebalance(arr = [])
-    self.inorder {|node| arr << node.data}
-    @root = self.build_tree(arr, 0, arr.length - 1)
+    inorder { |node| arr << node.data }
+    @root = build_tree(arr, 0, arr.length - 1)
   end
 end
-
-array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
-bst = Tree.new(array)
-
-bst.insert(60, bst.root)
-bst.insert(61, bst.root)
-bst.insert(62, bst.root)
-bst.delete(4, bst.root)
-bst.pretty_print
-# puts bst.find(2)
-# bst.level_order
-# bst.postorder { |node| puts node.data * 2 }
-# puts bst.height(bst.find_for_measure(5))
-# puts bst.depth(bst.find_for_measure(324))
-puts bst.balanced?
-bst.rebalance
-bst.pretty_print
