@@ -172,6 +172,7 @@ class Tree
 
   def depth(node, level = 0, check_node = nil)
     return 0 if node == @root
+    return "Number not in tree" if node == false
 
     queue = [@root]
     arr = []
@@ -204,4 +205,4 @@ bst.pretty_print
 # bst.level_order
 # bst.postorder { |node| puts node.data * 2 }
 puts bst.height(bst.find_for_measure(5))
-puts bst.depth(bst.find_for_measure(60))
+puts bst.depth(bst.find_for_measure(324))
