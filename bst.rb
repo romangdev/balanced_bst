@@ -97,6 +97,19 @@ class Tree
     false
   end
 
+  def find_for_measure(value)
+    queue = [@root]
+    until queue.empty?
+      check_node = queue.shift
+      return check_node if check_node == value
+
+      queue << check_node.left unless check_node.left.nil?
+      queue << check_node.right unless check_node.right.nil?
+    end
+
+    false
+  end
+
   def level_order(arr = [], &block)
     queue = [@root]
     until queue.empty?
@@ -147,6 +160,38 @@ class Tree
       arr << root
     end
   end
+
+  def height(root, height = 0)
+    return height - 1 if root.nil?
+    return "Number not in tree" if root == false
+
+    height += 1
+
+    [height(root.left, height), height(root.right, height)].max
+  end
+
+  def depth(node, level = 0, check_node = nil)
+    return 0 if node == @root
+
+    queue = [@root]
+    arr = []
+
+    until check_node == node
+      check_node = queue.shift
+      return level if check_node == node
+
+      arr << check_node.left unless check_node.left.nil?
+      arr << check_node.right unless check_node.right.nil?
+
+      if queue.empty?
+        level += 1
+
+        arr.each do |node_element|
+          queue << node_element
+        end
+      end
+    end
+  end
 end
 
 array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
@@ -157,4 +202,6 @@ bst.delete(4, bst.root)
 bst.pretty_print
 # puts bst.find(2)
 # bst.level_order
-bst.postorder {|node| puts node.data * 2}
+# bst.postorder { |node| puts node.data * 2 }
+puts bst.height(bst.find_for_measure(5))
+puts bst.depth(bst.find_for_measure(60))
