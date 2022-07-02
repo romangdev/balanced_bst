@@ -201,7 +201,9 @@ class Tree
     true
   end
 
-  def rebalance
+  def rebalance(arr = [])
+    self.inorder {|node| arr << node.data}
+    @root = self.build_tree(arr, 0, arr.length - 1)
   end
 end
 
@@ -219,3 +221,5 @@ bst.pretty_print
 # puts bst.height(bst.find_for_measure(5))
 # puts bst.depth(bst.find_for_measure(324))
 puts bst.balanced?
+bst.rebalance
+bst.pretty_print
