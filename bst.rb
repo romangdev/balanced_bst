@@ -193,16 +193,29 @@ class Tree
       end
     end
   end
+
+  def balanced?
+    return false if height(@root.left) - height(@root.right) > 1
+    return false if height(@root.right) - height(@root.left) > 1
+
+    true
+  end
+
+  def rebalance
+  end
 end
 
 array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
 bst = Tree.new(array)
 
 bst.insert(60, bst.root)
+bst.insert(61, bst.root)
+bst.insert(62, bst.root)
 bst.delete(4, bst.root)
 bst.pretty_print
 # puts bst.find(2)
 # bst.level_order
 # bst.postorder { |node| puts node.data * 2 }
-puts bst.height(bst.find_for_measure(5))
-puts bst.depth(bst.find_for_measure(324))
+# puts bst.height(bst.find_for_measure(5))
+# puts bst.depth(bst.find_for_measure(324))
+puts bst.balanced?
